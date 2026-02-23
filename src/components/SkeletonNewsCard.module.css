@@ -1,0 +1,94 @@
+.skeletonCard {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    border-radius: 12px;
+    height: 100%;
+    min-height: 280px;
+    /* Approximate height of real card */
+}
+
+/* The actual pulsing animation */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        background-color: var(--border-color);
+    }
+
+    50% {
+        opacity: .5;
+        background-color: var(--glass-border);
+    }
+}
+
+.pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    border-radius: 4px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.skeletonSource {
+    height: 12px;
+    width: 80px;
+}
+
+.skeletonBadge {
+    height: 20px;
+    width: 60px;
+    border-radius: 9999px;
+}
+
+.skeletonTitle {
+    height: 24px;
+    width: 90%;
+    margin-bottom: 0.5rem;
+}
+
+.skeletonTitleLine2 {
+    height: 24px;
+    width: 60%;
+    margin-bottom: 1.5rem;
+}
+
+.snippetContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+}
+
+.skeletonTextLine {
+    height: 14px;
+    width: 100%;
+}
+
+.skeletonTextLineShort {
+    height: 14px;
+    width: 70%;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.skeletonTime {
+    height: 14px;
+    width: 100px;
+}
+
+.skeletonButton {
+    height: 14px;
+    width: 60px;
+}
