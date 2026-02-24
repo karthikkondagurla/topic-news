@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pigeon - Semiconductor Lithography</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Satoshi:wght@300;400;500;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#380fbd",
+                        "background-light": "#f3f4f6", // Updated to match PRD cool grey
+                        "background-dark": "#141022",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1e1a2e",
+                        "tag-tech": "#DBEAFE",
+                        "tag-tech-text": "#1E40AF",
+                        "tag-finance": "#D1FAE5",
+                        "tag-finance-text": "#065F46",
+                        "tag-raw": "#FEE2E2",
+                        "tag-raw-text": "#991B1B",
+                        "tag-policy": "#FEF3C7",
+                        "tag-policy-text": "#92400E",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Satoshi", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                    boxShadow: {
+                        "subtle": "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
+                        "float": "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Satoshi', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased overflow-hidden flex h-screen">
+<!-- Sidebar (Reused & Adapted) -->
+<aside class="w-64 bg-white dark:bg-card-dark border-r border-slate-200 dark:border-slate-800 flex-shrink-0 flex flex-col justify-between z-20 h-full">
+<div class="flex flex-col h-full">
+<div class="p-6">
+<div class="flex flex-col mb-8">
+<h1 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">Pigeon</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Industry Tracker</p>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium">The Stream</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">bookmark</span>
+<span class="text-sm font-medium">Saved</span>
+</a>
+</div>
+<div class="mt-8">
+<p class="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 font-mono">Your Topics</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary" style="font-size: 20px;">anchor</span>
+<span class="text-sm font-medium">Maritime Insurance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary" style="font-size: 20px;">battery_charging_full</span>
+<span class="text-sm font-medium">Lithium Mining</span>
+</a>
+<!-- Active Topic -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-primary fill-1" style="font-size: 20px;">memory</span>
+<span class="text-sm">Semiconductors</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary" style="font-size: 20px;">precision_manufacturing</span>
+<span class="text-sm font-medium">Robotics</span>
+</a>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-slate-200 dark:border-slate-800">
+<button class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white py-2.5 rounded-lg text-sm font-bold transition-all shadow-subtle hover:shadow-lg">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>New Topic</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto relative h-full">
+<!-- Sticky Header Context -->
+<div class="sticky top-0 z-30 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center justify-between transition-all duration-300">
+<div class="flex flex-col">
+<div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<span class="text-slate-900 dark:text-white font-medium">Semiconductor Lithography</span>
+</div>
+<!-- Title that would shrink on scroll in a real JS implementation, static here for design -->
+<h1 class="text-2xl font-bold text-slate-900 dark:text-white leading-tight">Semiconductor Lithography</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="p-2 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-full transition-colors" title="Search Topic">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-full transition-colors" title="Topic Settings">
+<span class="material-symbols-outlined">tune</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-full text-slate-700 dark:text-slate-300 text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span>Unfollow</span>
+</button>
+</div>
+</div>
+<div class="max-w-5xl mx-auto p-8 space-y-10 pb-20">
+<!-- Hero Stats & Description -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 space-y-4">
+<p class="text-slate-600 dark:text-slate-400 text-lg leading-relaxed max-w-2xl">
+                        Deep dive into the latest trends, market shifts, and technological breakthroughs in advanced chip manufacturing and EUV photolithography.
+                    </p>
+<div class="flex flex-wrap gap-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">#EUV</span>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">#High-NA</span>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-mono font-medium bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">#SupplyChain</span>
+</div>
+</div>
+<!-- Stats Card -->
+<div class="bg-white dark:bg-card-dark rounded-xl p-5 shadow-subtle border border-slate-100 dark:border-slate-800 flex flex-col justify-between">
+<div>
+<p class="text-sm font-medium text-slate-500 mb-1">Activity Today</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-bold font-display text-slate-900 dark:text-white">24</span>
+<span class="text-sm font-medium text-primary">Articles</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+<span class="text-xs text-slate-400 font-mono">VS LAST WEEK</span>
+<span class="flex items-center text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[16px] mr-0.5">trending_up</span>
+                            12%
+                         </span>
+</div>
+</div>
+</div>
+<!-- Key Players Widget -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-display">Key Players</h3>
+<button class="text-xs text-primary font-medium hover:underline">View All</button>
+</div>
+<div class="relative group">
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2 mask-linear">
+<!-- Company Chip -->
+<div class="flex-shrink-0 flex items-center gap-3 bg-white dark:bg-card-dark p-3 rounded-xl border border-slate-200 dark:border-slate-800 min-w-[160px] cursor-pointer hover:shadow-md transition-shadow group/card">
+<div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">A</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">ASML</p>
+<p class="text-xs text-slate-500">Netherlands</p>
+</div>
+</div>
+<!-- Company Chip -->
+<div class="flex-shrink-0 flex items-center gap-3 bg-white dark:bg-card-dark p-3 rounded-xl border border-slate-200 dark:border-slate-800 min-w-[160px] cursor-pointer hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400 font-bold">T</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">TSMC</p>
+<p class="text-xs text-slate-500">Taiwan</p>
+</div>
+</div>
+<!-- Company Chip -->
+<div class="flex-shrink-0 flex items-center gap-3 bg-white dark:bg-card-dark p-3 rounded-xl border border-slate-200 dark:border-slate-800 min-w-[160px] cursor-pointer hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">I</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Intel</p>
+<p class="text-xs text-slate-500">USA</p>
+</div>
+</div>
+<!-- Company Chip -->
+<div class="flex-shrink-0 flex items-center gap-3 bg-white dark:bg-card-dark p-3 rounded-xl border border-slate-200 dark:border-slate-800 min-w-[160px] cursor-pointer hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center text-yellow-600 dark:text-yellow-400 font-bold">N</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Nikon</p>
+<p class="text-xs text-slate-500">Japan</p>
+</div>
+</div>
+<!-- Company Chip -->
+<div class="flex-shrink-0 flex items-center gap-3 bg-white dark:bg-card-dark p-3 rounded-xl border border-slate-200 dark:border-slate-800 min-w-[160px] cursor-pointer hover:shadow-md transition-shadow">
+<div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold">C</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Canon</p>
+<p class="text-xs text-slate-500">Japan</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Filtered Stream (Masonry Layout Simulation with Flex Column) -->
+<div class="space-y-4">
+<div class="flex items-center gap-4 border-b border-slate-200 dark:border-slate-700 pb-2">
+<button class="text-sm font-bold text-slate-900 dark:text-white border-b-2 border-primary pb-2 -mb-2.5">Latest News</button>
+<button class="text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-colors pb-2">Market Data</button>
+<button class="text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-colors pb-2">Regulatory</button>
+</div>
+<div class="columns-1 md:columns-2 lg:columns-2 gap-6 space-y-6">
+<!-- Card 1: Standard Image Card -->
+<article class="break-inside-avoid bg-white dark:bg-card-dark rounded-2xl shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 overflow-hidden group cursor-pointer border border-slate-100 dark:border-slate-800">
+<div class="relative h-48 w-full overflow-hidden">
+<img alt="Chip Wafer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close up of a computer chip wafer with purple and blue lighting reflecting on the silicon surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKARlcjoa55fuwqipLVzS9ilTkAvNuNx-f2ey_S8ek8QT48Y40jMjIRAVOtTNxShyW2WjIfYpY0gKEfB8sGHrzIyiKG_1PIuksCKAZ_CvAePdDOrGp5tiJ79cYbu1iQA3xODvsYAr7McKV_GxqL6pzPfLJejHurAjxoVUyD06kLOYA8cgPMhAbfBrox_mY_kOP6YnZydW44bVlzPClU-JF3caRAmtsmJAHCLzlN0F4U7ZYN2keuUw3IG9JePgyquCuObRW7T1Y-sw"/>
+<div class="absolute top-3 left-3">
+<span class="bg-tag-tech/90 backdrop-blur text-tag-tech-text text-[11px] font-mono font-bold uppercase tracking-wide px-2 py-1 rounded-md">Technology</span>
+</div>
+</div>
+<div class="p-5">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-primary transition-colors">ASML ships first High-NA EUV machine to Intel in Oregon</h2>
+<p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 mb-4">A historic milestone for the semiconductor industry as the first next-gen lithography tool arrives in the US.</p>
+<div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
+<span class="text-slate-900 dark:text-slate-200">Reuters</span>
+<span>•</span>
+<span>2h ago</span>
+</div>
+</div>
+</article>
+<!-- Card 2: Trend/Chart Widget -->
+<article class="break-inside-avoid bg-white dark:bg-card-dark rounded-2xl shadow-subtle p-5 border border-slate-100 dark:border-slate-800">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="bg-tag-finance text-tag-finance-text text-[11px] font-mono font-bold uppercase tracking-wide px-2 py-1 rounded-md">Market Data</span>
+<h2 class="text-lg font-bold text-slate-900 dark:text-white mt-3">Neon Gas Price Index</h2>
+</div>
+<div class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded text-xs font-bold flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-1">arrow_upward</span>
+                                4.2%
+                            </div>
+</div>
+<!-- Abstract Chart Representation -->
+<div class="h-32 w-full flex items-end gap-1 px-2 mb-2">
+<div class="w-1/6 bg-slate-100 h-[40%] rounded-t"></div>
+<div class="w-1/6 bg-slate-100 h-[55%] rounded-t"></div>
+<div class="w-1/6 bg-slate-100 h-[45%] rounded-t"></div>
+<div class="w-1/6 bg-slate-200 h-[60%] rounded-t"></div>
+<div class="w-1/6 bg-primary/30 h-[75%] rounded-t"></div>
+<div class="w-1/6 bg-primary h-[90%] rounded-t relative group cursor-pointer">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                     $450/unit
+                                 </div>
+</div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-400 font-mono uppercase">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+<span>Sat</span>
+</div>
+</article>
+<!-- Card 3: Text Only / Quote -->
+<article class="break-inside-avoid bg-tag-policy rounded-2xl shadow-subtle p-6 hover:-translate-y-1 transition-transform duration-300 border border-yellow-200">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-tag-policy-text" style="font-size: 24px;">campaign</span>
+<span class="text-tag-policy-text text-[11px] font-mono font-bold uppercase tracking-wide">Regulation</span>
+</div>
+<h2 class="text-xl font-bold text-tag-policy-text leading-snug mb-4">"The EU Chip Act is moving faster than expected. We anticipate funding rounds to close by Q3 2024."</h2>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-yellow-600/20 flex items-center justify-center text-yellow-800 font-bold text-xs">EK</div>
+<div>
+<p class="text-xs font-bold text-tag-policy-text">Elise K.</p>
+<p class="text-[10px] text-tag-policy-text/70 uppercase">Brussels Policy Watch</p>
+</div>
+</div>
+</article>
+<!-- Card 4: Standard News -->
+<article class="break-inside-avoid bg-white dark:bg-card-dark rounded-2xl shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 overflow-hidden group cursor-pointer border border-slate-100 dark:border-slate-800">
+<div class="p-5">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-tag-raw text-tag-raw-text text-[11px] font-mono font-bold uppercase tracking-wide px-2 py-1 rounded-md">Raw Materials</span>
+</div>
+<h2 class="text-lg font-bold text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-primary transition-colors">China restricts Gallium exports, impacting wafer production</h2>
+<p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-3 mb-4">New export controls on critical minerals could delay global supply chains by up to 6 months, analysts warn.</p>
+<div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
+<span class="text-slate-900 dark:text-slate-200">Bloomberg</span>
+<span>•</span>
+<span>5h ago</span>
+</div>
+</div>
+</article>
+<!-- Card 5: Image Card -->
+<article class="break-inside-avoid bg-white dark:bg-card-dark rounded-2xl shadow-subtle hover:shadow-float hover:-translate-y-1 transition-all duration-300 overflow-hidden group cursor-pointer border border-slate-100 dark:border-slate-800">
+<div class="relative h-40 w-full overflow-hidden">
+<img alt="Clean Room" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Futuristic clean room laboratory with blue lighting and advanced machinery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgv0wOWynwwiM9s6JEZbqXeEWIHrop2e3vrGVptZB_eoytG9kBuK3XXWdeEr6qLEsm4LNrpVEEhNE6pwOapp4IkFPZrlFvUlLIS-QDO4tuzRG93NEFoEW9shrzFMQfbRDk3a4lkoMXTSnEvTN8m-kgtT8fzv_prDGfE6eDXCNM0CN8ex2WWJeiAT7geEUg1z5aMqHBOTkwGr43A6LY025EdQqjKm5SHOh_lr3SDOepx6WXsTrFo2vyTCLctFjZCy7V6_bFbo73ye8"/>
+<div class="absolute top-3 left-3">
+<span class="bg-tag-tech/90 backdrop-blur text-tag-tech-text text-[11px] font-mono font-bold uppercase tracking-wide px-2 py-1 rounded-md">R&amp;D</span>
+</div>
+</div>
+<div class="p-5">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-primary transition-colors">Canon creates new nano-imprint method to rival EUV</h2>
+<div class="flex items-center gap-2 text-xs text-slate-400 font-medium mt-3">
+<span class="text-slate-900 dark:text-slate-200">Nikkei Asia</span>
+<span>•</span>
+<span>8h ago</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Loading State / Pagination -->
+<div class="pt-8 pb-4 flex justify-center">
+<button class="flex items-center gap-2 text-slate-500 hover:text-primary font-medium transition-colors text-sm">
+<span class="material-symbols-outlined animate-spin" style="font-size: 20px;">progress_activity</span>
+                        Loading more insights...
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

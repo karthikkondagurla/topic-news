@@ -1,0 +1,240 @@
+Here is the updated Product Requirements Document with the requested changes applied.
+
+# Pigeon PRD
+
+## Product Overview
+
+**The Pitch:** Pigeon transforms niche industry news into an addictive visual stream. Instead of boring RSS readers or cluttered newsletters, professionals track specific verticals—from "Maritime Insurance" to "Semiconductor Lithography"—in a vibrant, card-based dashboard that feels like Pinterest for serious topics.
+
+**For:** Industry analysts, specialized investors, and curious professionals who need to track multiple granular interests without suffering through information overload or ugly enterprise interfaces.
+
+**Device:** Desktop (Primary), Responsive Web
+
+**Design Direction:** "Digital Bento" – A highly organized, modular aesthetic featuring distinct card containers, vibrant functional color-coding for topics, and a background that recedes completely. It balances playfulness with information density.
+
+**Inspired by:** Are.na, Bento, MyMind
+
+---
+
+## Screens
+
+- **Topic Onboarding:** Select initial high-specificity interests to populate the stream.
+- **The Stream (Home):** Masonry grid of news cards mixed with topic stats and quick actions.
+- **Topic Detail:** A dedicated view for a single vertical (e.g., "Cobalt Mining") with trend graphs.
+- **Reader Modal:** Distraction-free article view overlaying the stream.
+- **Saved Collection:** A personal archive of pinned articles and insights.
+
+---
+
+## Key Flows
+
+**Initial Calibration:**
+1. User lands on **Topic Onboarding** -> Selects "Container Shipping" and "Rare Earth Metals".
+2. User clicks **"Build My Stream"** -> Transition animation fills the screen.
+3. User lands on **The Stream (Home)** populated with cards tagged by these topics.
+
+**Discovery to Deep Dive:**
+1. User sees a card in **The Stream** with a "Semiconductors" tag.
+2. User clicks the **Tag** itself -> Navigates to **Topic Detail**.
+3. User sees historical trend data and top sources for just that industry.
+
+**Quick Read:**
+1. User clicks a headline on a card in **The Stream**.
+2. **Reader Modal** slides up from the bottom (sheet style).
+3. User reads, clicks "Save", then dismisses modal to return to scroll position.
+
+---
+
+<details>
+<summary>Design System</summary>
+
+## Color Palette
+
+The palette uses a warm, neutral base to let the content and tags pop.
+
+- **Primary:** `#111827` - Navigation, Headings, Primary actions (Ink Black)
+- **Background:** `#F3F4F6` - The canvas (Cool Grey 100)
+- **Surface:** `#FFFFFF` - Cards, Modals (White)
+- **Text:** `#374151` - Body copy, summaries (Grey 700)
+- **Muted:** `#9CA3AF` - Timestamps, source domains (Grey 400)
+- **Border:** `#E5E7EB` - Subtle card definitions (Grey 200)
+
+**Dynamic Topic Tags (The "Vibrant" Aspect):**
+- **Tech/Hardware:** `#DBEAFE` (bg) + `#1E40AF` (text) - Blue
+- **Finance/Markets:** `#D1FAE5` (bg) + `#065F46` (text) - Emerald
+- **Raw Materials:** `#FEE2E2` (bg) + `#991B1B` (text) - Red
+- **Policy/Regs:** `#FEF3C7` (bg) + `#92400E` (text) - Amber
+- **Logistics:** `#F3E8FF` (bg) + `#6B21A8` (text) - Purple
+
+## Typography
+
+Characterful sans-serifs that feel modern but authoritative.
+
+- **Headings:** **Space Grotesk**, 700. Technical but quirky.
+  - H1: 32px (Page Titles)
+  - H2: 24px (Card Headlines)
+  - H3: 18px (Section Headers)
+- **Body:** **Satoshi**, 400/500. Highly legible geometric sans.
+  - Body: 16px, 1.6 leading
+  - Small: 13px (Metadata)
+- **UI Elements:** **JetBrains Mono**, 500. For tags and data points.
+  - Tag: 12px, uppercase
+
+**Style notes:**
+- **Cards:** `border-radius: 16px`, `box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05)`
+- **Hover:** Cards lift slightly (`transform: translateY(-2px)`) and shadow deepens.
+- **Atmosphere:** Clean, airy, organized chaos (masonry).
+
+## Design Tokens
+
+```css
+:root {
+  --color-ink: #111827;
+  --color-canvas: #F3F4F6;
+  --color-card: #FFFFFF;
+  --color-body: #374151;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Satoshi', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-card: 16px;
+  --radius-tag: 6px;
+  --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+```
+
+</details>
+
+---
+
+<details>
+<summary>Screen Specifications</summary>
+
+### 1. Topic Onboarding
+
+**Purpose:** Hook the user by letting them define their hyper-specific niche immediately.
+
+**Layout:** Split screen. Left 40% fixed with headline/search. Right 60% scrollable grid of topic chips.
+
+**Key Elements:**
+- **Hero Text (Left):** "Tell us what matters." (H1, Space Grotesk). Subtext: "Select at least 3 topics to build your stream."
+- **Search Input (Left):** Large, pill-shaped input. `height: 56px`, `bg: #FFFFFF`, `border: 1px solid #E5E7EB`. Placeholder: "e.g. Lithium, OSHA, DeFi..."
+- **Topic Grid (Right):** A dense cloud of selectable chips.
+  - **Chip:** `padding: 12px 20px`, `border: 1px solid #E5E7EB`, `radius: 100px`.
+  - **State - Selected:** Background turns Black (`#111827`), Text White.
+- **Sticky Footer:** "Build Stream (3 selected)" button. Visible once selection > 0.
+
+**Interactions:**
+- **Click Chip:** Toggles selection state instantly. Counter updates.
+- **Type in Search:** Filters the right-hand grid in real-time.
+
+---
+
+### 2. The Stream (Home)
+
+**Purpose:** The main dashboard. Serendipitous discovery of tracked topics.
+
+**Layout:**
+- **Sidebar (Left, 240px):** Fixed navigation (Stream, Saved, specific topic shortcuts).
+- **Header (Top, Sticky):** Date, "Good morning", and global search.
+- **Main Content:** 3-column masonry grid (Bento style).
+
+**Key Elements:**
+- **News Card (Standard):**
+  - **Image:** Top half, aspect ratio 16:9, rounded corners.
+  - **Tag:** Top left over image. Mono font.
+  - **Headline:** H2, black.
+  - **Source/Time:** "Reuters • 2h ago" (Muted, 13px).
+- **Text-Only Card (Compact):** Yellow background (`#FEF3C7`). Bold quote or stat. No image.
+- **Trend Card (Widget):** "Lithium Price" line chart (Sparkline). Minimalist axes.
+- **Sidebar Nav:** Vertical list using Space Grotesk. Active state has a black dot indicator.
+
+**States:**
+- **Loading:** Skeleton pulses (shimmer effect) on card shapes.
+- **New Content:** "New Pigeons arrived" pill floats at top center. Click to refresh.
+
+**Responsive:**
+- **Desktop:** 3 columns + Sidebar.
+- **Tablet:** 2 columns + Hamburger menu.
+- **Mobile:** 1 column stream.
+
+---
+
+### 3. Topic Detail (e.g., "Cotton Futures")
+
+**Purpose:** Deep dive into a specific vertical.
+
+**Layout:** Single column feed with a rich header.
+
+**Key Elements:**
+- **Topic Header:**
+  - **Title:** "Cotton Futures" (H1).
+  - **Stats Row:** "24 Articles today", "+12% activity vs last week".
+  - **Action:** "Unfollow" (Outlined button).
+- **Key Players Widget:** Horizontal scroll list of companies frequently mentioned (e.g., "Cargill", "Louis Dreyfus").
+- **Filtered Stream:** Same card components as Home, but strictly filtered to this topic.
+
+**Interactions:**
+- **Scroll Header:** Title shrinks to navbar size on scroll.
+
+---
+
+### 4. Reader Modal
+
+**Purpose:** Reading content without leaving the flow context.
+
+**Layout:** Centered modal overlay, max-width 700px. Background backdrop blur.
+
+**Key Elements:**
+- **Close Button:** Top right, fixed. Large "X" icon.
+- **Content Area:** White background, padding 48px.
+- **Article Header:**
+  - **Topic Tag:** Clickable to go to Topic Detail.
+  - **Title:** H1, 40px size.
+  - **Meta:** Author, Original Source Link (external icon).
+- **Article Body:**
+  - **Typography:** Satoshi, 18px size for readability.
+  - **Pull Quotes:** Left border 4px solid `#111827`, italic text.
+- **Floating Action Bar (Bottom Center):**
+  - "Save to Collection" (Bookmark icon).
+  - "Share" (Arrow icon).
+  - "Copy Link" (Link icon).
+
+**Interactions:**
+- **Click Backdrop:** Closes modal.
+- **Press Esc:** Closes modal.
+
+---
+
+### 5. Saved Collection
+
+**Purpose:** Archive of valuable finds.
+
+**Layout:** Grid layout similar to Stream, but strictly chronological.
+
+**Key Elements:**
+- **Filter Bar:** "All Saved", "Articles", "Quotes", "Charts".
+- **Export Button:** "Export to CSV/PDF" (Top right).
+- **Saved Item Card:** Similar to News Card but adds a "Date Saved" label in the footer.
+- **Notes Field:** Users can add a private note to saved cards. Displayed as a yellow sticky note style overlay on the card.
+
+**States:**
+- **Empty:** Illustration of an empty pigeon coop. Text: "No findings yet. Go hunt."
+
+</details>
+
+---
+
+<details>
+<summary>Build Guide</summary>
+
+**Stack:** HTML + Tailwind CSS v3
+
+**Build Order:**
+1. **The Stream (Home):** This defines the core Masonry layout logic and the Card component, which are the building blocks of the app.
+2. **Reader Modal:** Essential for the consumption loop.
+3. **Topic Onboarding:** Required for the user to actually populate the home screen.
+4. **Topic Detail:** Reuses the stream components but adds header complexity.
+5. **Saved Collection:** Lower priority utility page.
+
+</details>

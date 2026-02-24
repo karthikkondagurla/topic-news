@@ -1,28 +1,28 @@
 "use client";
 
-import styles from "./SkeletonNewsCard.module.css";
-
 export default function SkeletonNewsCard() {
     return (
-        <div className={`glass ${styles.skeletonCard}`}>
-            <div className={styles.header}>
-                <div className={`${styles.pulse} ${styles.skeletonSource}`}></div>
-                <div className={`${styles.pulse} ${styles.skeletonBadge}`}></div>
+        <article className="break-inside-avoid bg-white dark:bg-card-dark rounded-2xl shadow-subtle border border-slate-100 dark:border-slate-800 p-5 overflow-hidden animate-pulse">
+            <div className="flex justify-between items-start mb-3">
+                <div className="h-6 w-20 bg-slate-200 dark:bg-slate-700 rounded-md"></div>
             </div>
 
-            <div className={`${styles.pulse} ${styles.skeletonTitle}`}></div>
-            <div className={`${styles.pulse} ${styles.skeletonTitleLine2}`}></div>
-
-            <div className={styles.snippetContainer}>
-                <div className={`${styles.pulse} ${styles.skeletonTextLine}`}></div>
-                <div className={`${styles.pulse} ${styles.skeletonTextLine}`}></div>
-                <div className={`${styles.pulse} ${styles.skeletonTextLineShort}`}></div>
+            <div className="space-y-3 mb-4">
+                <div className="h-6 w-3/4 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
+                <div className="h-6 w-1/2 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
             </div>
 
-            <div className={styles.footer}>
-                <div className={`${styles.pulse} ${styles.skeletonTime}`}></div>
-                <div className={`${styles.pulse} ${styles.skeletonButton}`}></div>
+            <div className="space-y-2 mb-6">
+                <div className="h-4 w-full bg-slate-100 dark:bg-slate-800 rounded"></div>
+                <div className="h-4 w-full bg-slate-100 dark:bg-slate-800 rounded"></div>
+                <div className="h-4 w-2/3 bg-slate-100 dark:bg-slate-800 rounded"></div>
             </div>
-        </div>
+
+            <div className="flex items-center gap-2 mt-auto">
+                <div className="h-3 w-16 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                <div className="h-3 w-3 bg-slate-200 dark:bg-slate-700 rounded-full"></div>
+                <div className="h-3 w-12 bg-slate-200 dark:bg-slate-700 rounded"></div>
+            </div>
+        </article>
     );
 }
