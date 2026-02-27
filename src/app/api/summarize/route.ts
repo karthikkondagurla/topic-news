@@ -51,16 +51,18 @@ export async function POST(request: Request) {
 
         const prompt = `
         You are an expert news summarizer. I am giving you the title and the scraped text of a news article. 
-        Your job is to provide exactly two things in a strict JSON format:
-        1. A "summary" array where each item is a detailed paragraph (string) summarizing the article. Provide 3-4 comprehensive paragraphs to give the user a full understanding of the story. Do NOT use bullet points, write full paragraphs.
-        2. A "sentiment" string that is exactly one of these three words: "Positive", "Neutral", "Negative".
+        Your job is to provide exactly three things in a strict JSON format:
+        1. A "short_summary" array of strings where each string is a very brief bullet point. Provide exactly 3-4 short bullet points (maximum 4 lines total) summarizing the article for a quick glance.
+        2. A "detailed_summary" array where each item is a detailed paragraph (string) summarizing the article. Provide 3-4 comprehensive paragraphs to give the user a full understanding of the story. Do NOT use bullet points here, write full paragraphs.
+        3. A "sentiment" string that is exactly one of these three words: "Positive", "Neutral", "Negative".
 
         Title: ${title}
         Article Text: ${articleText || "Text not available. Please try to infer a summary from the title."}
 
         Respond ONLY with a valid JSON object matching this TypeScript interface:
         {
-            "summary": string[], // 3-4 paragraphs
+            "short_summary": string[], // 3-4 short bullet points
+            "detailed_summary": string[], // 3-4 comprehensive paragraphs
             "sentiment": "Positive" | "Neutral" | "Negative"
         }
         `;

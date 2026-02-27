@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
@@ -21,6 +21,7 @@ export default function DashboardPage() {
     const [isTopicsLoading, setIsTopicsLoading] = useState(false);
     const [isNewsLoading, setIsNewsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<'latest' | 'trending'>('latest');
 
     // BYOK State
     const [groqApiKey, setGroqApiKey] = useState("");
@@ -112,8 +113,7 @@ export default function DashboardPage() {
                 }
             });
 
-            // Sort by newest first
-            allArticles.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+            // We sort dynamically using useMemo in the render cycle
             setArticles(allArticles);
 
         } catch (err) {
@@ -189,6 +189,16 @@ export default function DashboardPage() {
         }
     };
 
+    const displayedArticles = useMemo(() => {
+        const sorted = [...articles];
+        if (activeTab === 'latest') {
+            sorted.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
+        } else if (activeTab === 'trending') {
+            sorted.sort((a, b) => (a.rank || 0) - (b.rank || 0));
+        }
+        return sorted;
+    }, [articles, activeTab]);
+
     if (isAuthLoading) {
         return <div className="flex h-screen items-center justify-center text-slate-500">Authenticating...</div>;
     }
@@ -239,12 +249,12 @@ export default function DashboardPage() {
             {/* Main Content Area */}
             <main className="flex-1 overflow-y-auto relative h-full">
                 {/* Sticky Header Container */}
-                <div className="sticky top-0 z-30 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-8 py-4 flex items-center justify-between transition-all duration-300">
+                <div className="sticky top-0 z-30 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border-b border-white/40 dark:border-slate-800/60 px-8 py-4 flex items-center justify-between transition-all duration-300 shadow-sm">
                     <div className="flex flex-col">
-                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white leading-tight">The Stream</h1>
+                        <h1 className="text-[26px] tracking-tight font-extrabold text-slate-900 dark:text-white leading-tight">The Stream</h1>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button onClick={handleSignOut} className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-full text-slate-700 dark:text-slate-300 text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <button onClick={handleSignOut} className="flex items-center gap-2 px-5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-full text-slate-700 dark:text-slate-200 text-[13px] font-bold transition-all shadow-sm hover:shadow active:scale-95">
                             <span>Sign Out</span>
                         </button>
                     </div>
@@ -252,49 +262,63 @@ export default function DashboardPage() {
 
                 <div className="max-w-5xl mx-auto p-8 space-y-10 pb-20">
 
-                    {/* Topic Search Box (Bento Style) */}
-                    <div className="bg-white dark:bg-card-dark rounded-xl p-6 shadow-subtle border border-slate-100 dark:border-slate-800 flex flex-col justify-between">
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-display mb-4">Add Topics</h3>
-                        <SearchBar onAddTopic={handleAddTopic} isLoading={isTopicsLoading} />
-                    </div>
+                    {/* Top Controls Row */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* Topic Search Box (Bento Style) */}
+                        <div className="col-span-1 lg:col-span-2 bg-white/70 dark:bg-card-dark/70 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-white/60 dark:border-slate-700/50 flex flex-col justify-between">
+                            <h3 className="text-[13px] font-extrabold text-slate-900 dark:text-white uppercase tracking-wider font-display mb-1.5">Add Topics</h3>
+                            <SearchBar onAddTopic={handleAddTopic} isLoading={isTopicsLoading} />
+                        </div>
 
-                    {/* AI Config Box */}
-                    <div className="bg-white dark:bg-card-dark rounded-xl p-6 shadow-subtle border border-slate-100 dark:border-slate-800">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-display">AI Summary Settings</h3>
-                            <span className="bg-tag-tech text-tag-tech-text text-[11px] font-mono font-bold uppercase tracking-wide px-2 py-1 rounded-md">Configure</span>
+                        {/* AI Config Box */}
+                        <div className="col-span-1 bg-white/70 dark:bg-card-dark/70 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-white/60 dark:border-slate-700/50 flex flex-col justify-between shadow-inner">
+                            <div>
+                                <div className="flex justify-between items-center mb-1">
+                                    <h3 className="text-[13px] font-extrabold text-slate-900 dark:text-white uppercase tracking-wider font-display">Api settings</h3>
+                                    <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full border border-slate-200/50">Configure</span>
+                                </div>
+                                <p className="text-[11px] leading-tight text-slate-500 mb-1.5">Add your free Groq API key to unlock better experience</p>
+                            </div>
+                            <div className="mt-auto relative w-full pt-1">
+                                <div className="flex gap-2 w-full">
+                                    <input
+                                        type="password"
+                                        placeholder="gsk_..."
+                                        value={groqApiKey}
+                                        onChange={(e) => setGroqApiKey(e.target.value)}
+                                        className="flex-1 w-full min-w-0 px-4 py-2 rounded-full border border-slate-200/60 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md text-slate-900 dark:text-white font-mono text-[13px] focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 transition-all shadow-inner"
+                                    />
+                                    <button
+                                        onClick={handleSaveApiKey}
+                                        disabled={isSavingKey || !groqApiKey.startsWith("gsk_")}
+                                        className="px-5 py-2 bg-primary text-white font-bold text-[13px] rounded-full hover:bg-primary/90 shadow-sm hover:shadow active:scale-95 disabled:opacity-50 transition-all whitespace-nowrap"
+                                    >
+                                        {isSavingKey ? "Saving..." : "Save"}
+                                    </button>
+                                </div>
+                                {keySavedMessage && <span className="text-emerald-600 text-xs mt-2 block font-medium absolute">{keySavedMessage}</span>}
+                            </div>
                         </div>
-                        <p className="text-sm text-slate-500 mb-4">Provide a free Groq API key to unlock LLM-powered bullet summaries and sentiment tracking entirely in-browser.</p>
-                        <div className="flex gap-2 max-w-lg">
-                            <input
-                                type="password"
-                                placeholder="gsk_..."
-                                value={groqApiKey}
-                                onChange={(e) => setGroqApiKey(e.target.value)}
-                                className="flex-1 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                            />
-                            <button
-                                onClick={handleSaveApiKey}
-                                disabled={isSavingKey || !groqApiKey.startsWith("gsk_")}
-                                className="px-4 py-2 bg-primary text-white font-bold text-sm rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors"
-                            >
-                                {isSavingKey ? "Saving..." : "Save"}
-                            </button>
-                        </div>
-                        {keySavedMessage && <span className="text-emerald-600 text-xs mt-2 block font-medium">{keySavedMessage}</span>}
                     </div>
 
                     {/* Filtered Stream Masonry */}
                     <div className="space-y-4">
                         <div className="flex items-center gap-4 border-b border-slate-200 dark:border-slate-700 pb-2">
-                            <button className="text-sm font-bold text-slate-900 dark:text-white border-b-2 border-primary pb-2 -mb-2.5">Latest News</button>
+                            <button
+                                onClick={() => setActiveTab('latest')}
+                                className={`text-sm font-bold pb-2 -mb-2.5 transition-colors ${activeTab === 'latest' ? 'text-slate-900 dark:text-white border-b-2 border-primary' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
+                            >Latest News</button>
+                            <button
+                                onClick={() => setActiveTab('trending')}
+                                className={`text-sm font-bold pb-2 -mb-2.5 transition-colors ${activeTab === 'trending' ? 'text-slate-900 dark:text-white border-b-2 border-primary' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'}`}
+                            >Trending</button>
                         </div>
 
                         <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
                             {isNewsLoading ? (
                                 [...Array(6)].map((_, i) => <SkeletonNewsCard key={i} />)
-                            ) : articles.length > 0 ? (
-                                articles.map((article, index) => (
+                            ) : displayedArticles.length > 0 ? (
+                                displayedArticles.map((article, index) => (
                                     <NewsCard key={`${article.link}-${index}`} article={article} groqApiKey={groqApiKey} />
                                 ))
                             ) : (

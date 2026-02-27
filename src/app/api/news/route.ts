@@ -19,15 +19,16 @@ export async function GET(request: Request) {
         );
     }
 
-    // URL Encode the topic for safety
-    const encodedTopic = encodeURIComponent(rawTopic.trim());
+    // URL Encode the topic for safety and append when:1d to get only last 24h
+    const query = `${rawTopic.trim()} when:1d`;
+    const encodedTopic = encodeURIComponent(query);
     const feedUrl = `https://news.google.com/rss/search?q=${encodedTopic}&hl=en-US&gl=US&ceid=US:en`;
 
     try {
         const feed = await parser.parseURL(feedUrl);
 
         // Map the bloated RSS fields into our clean Article interface
-        const articles = feed.items.map((item) => {
+        const articles = feed.items.map((item, index) => {
             // Google News title formats are often "Real Title - Source Name"
             let title = item.title || "Untitled Article";
             let source = item.source || "Unknown Source";
@@ -45,6 +46,7 @@ export async function GET(request: Request) {
                 source: source,
                 contentSnippet: item.contentSnippet,
                 topic: rawTopic,
+                rank: index,
             };
         });
 

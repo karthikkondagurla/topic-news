@@ -62,7 +62,7 @@ export default function ReaderModal() {
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || "Failed to summarize.");
 
-                setSummary(data.summary || []);
+                setSummary(data.detailed_summary || []);
                 setSentiment(data.sentiment || null);
                 setOgImage(data.ogImage || null);
                 setAuthor(data.author || "Editorial Team");
@@ -146,6 +146,23 @@ export default function ReaderModal() {
                         className="p-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-full text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 shadow-subtle hover:scale-105 active:scale-95"
                     >
                         <span className="material-symbols-outlined block" style={{ fontSize: '24px' }}>close</span>
+                    </button>
+                </div>
+
+                {/* Footer (Sticky Save Button) */}
+                <div className="absolute bottom-6 right-6 z-20 pointer-events-auto">
+                    <button
+                        onClick={handleSave}
+                        disabled={isSaving || isSaved}
+                        className={`flex items-center gap-2 px-4 py-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur rounded-full transition-colors shadow-subtle hover:scale-105 active:scale-95 ${isSaved
+                            ? "text-primary cursor-default"
+                            : "text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700"
+                            }`}
+                    >
+                        <span className="material-symbols-outlined block" style={{ fontSize: '20px' }}>
+                            {isSaved ? "bookmark_added" : "bookmark_add"}
+                        </span>
+                        <span className="text-sm font-bold">{isSaving ? "Saving..." : isSaved ? "Saved" : "Save Article"}</span>
                     </button>
                 </div>
 
