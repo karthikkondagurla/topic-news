@@ -30,4 +30,19 @@
   .glass {
     @apply bg-white/70 dark:bg-card-dark/70 backdrop-blur-md border border-white/20 dark:border-slate-800;
   }
+
+  /* React Masonry CSS */
+  .pigeon-masonry-grid {
+    display: flex;
+    margin-left: -24px; /* match gap-6 (1.5rem = 24px) */
+    width: auto;
+  }
+  .pigeon-masonry-grid_column {
+    padding-left: 24px; /* match gap-6 */
+    background-clip: padding-box;
+  }
+  .pigeon-masonry-grid_column > div,
+  .pigeon-masonry-grid_column > article {
+    margin-bottom: 24px; /* match gap-6 vertically */
+  }
 }

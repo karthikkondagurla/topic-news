@@ -2,9 +2,16 @@ import Link from "next/link";
 import NewsCard, { Article } from "@/components/NewsCard";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import MasonryLayout from "@/components/MasonryLayout";
 
 export default async function SavedArticlesPage() {
     const supabase = await createClient();
+
+    const breakpointColumnsObj = {
+        default: 3,
+        1024: 2,
+        768: 1
+    };
 
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
@@ -73,12 +80,18 @@ export default async function SavedArticlesPage() {
                             </Link>
                         </div>
                     ) : (
-                        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                        <MasonryLayout
+                            breakpointCols={breakpointColumnsObj}
+                            className="pigeon-masonry-grid"
+                            columnClassName="pigeon-masonry-grid_column"
+                        >
                             {/* Article Feed */}
                             {savedArticles.map((article: Article, i: number) => (
-                                <NewsCard key={`${article.link}-${i}`} article={article} groqApiKey={apiKey} />
+                                <div key={`${article.link}-${i}`}>
+                                    <NewsCard article={article} groqApiKey={apiKey} />
+                                </div>
                             ))}
-                        </div>
+                        </MasonryLayout>
                     )}
                 </div>
             </div>

@@ -13,7 +13,7 @@ export default function ReaderModal() {
     // Metadata & AI State from backend
     const [summary, setSummary] = useState<string[]>([]);
     const [sentiment, setSentiment] = useState<string | null>(null);
-    const [ogImage, setOgImage] = useState<string | null>(null);
+
     const [author, setAuthor] = useState<string | null>(null);
 
     const [isLoadingAI, setIsLoadingAI] = useState(false);
@@ -35,7 +35,7 @@ export default function ReaderModal() {
         setIsSaved(false);
         setSummary([]);
         setSentiment(null);
-        setOgImage(null);
+
         setAuthor(null);
         setAiError(null);
 
@@ -64,7 +64,7 @@ export default function ReaderModal() {
 
                 setSummary(data.detailed_summary || []);
                 setSentiment(data.sentiment || null);
-                setOgImage(data.ogImage || null);
+
                 setAuthor(data.author || "Editorial Team");
             } catch (err: any) {
                 console.error("Scraping/Summarization error:", err);

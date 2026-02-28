@@ -5,14 +5,20 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import SearchBar from "@/components/SearchBar";
-import TopicPill from "@/components/TopicPill";
+
 import NewsCard, { Article } from "@/components/NewsCard";
 import SkeletonNewsCard from "@/components/SkeletonNewsCard";
-import { LogOut } from "lucide-react";
+import MasonryLayout from "@/components/MasonryLayout";
 
 export default function DashboardPage() {
     const router = useRouter();
     const supabase = createClient();
+
+    const breakpointColumnsObj = {
+        default: 3,
+        1024: 2,
+        768: 1
+    };
     const [user, setUser] = useState<any>(null);
     const [topics, setTopics] = useState<string[]>([]);
     const [articles, setArticles] = useState<Article[]>([]);
@@ -314,19 +320,27 @@ export default function DashboardPage() {
                             >Trending</button>
                         </div>
 
-                        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-                            {isNewsLoading ? (
-                                [...Array(6)].map((_, i) => <SkeletonNewsCard key={i} />)
-                            ) : displayedArticles.length > 0 ? (
-                                displayedArticles.map((article, index) => (
-                                    <NewsCard key={`${article.link}-${index}`} article={article} groqApiKey={groqApiKey} />
-                                ))
-                            ) : (
-                                !isTopicsLoading && topics.length > 0 && (
-                                    <p className="text-slate-500 font-medium text-sm">No recent news found for your topics.</p>
-                                )
-                            )}
-                        </div>
+                        {isNewsLoading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {[...Array(6)].map((_, i) => <SkeletonNewsCard key={i} />)}
+                            </div>
+                        ) : displayedArticles.length > 0 ? (
+                            <MasonryLayout
+                                breakpointCols={breakpointColumnsObj}
+                                className="pigeon-masonry-grid"
+                                columnClassName="pigeon-masonry-grid_column"
+                            >
+                                {displayedArticles.map((article, index) => (
+                                    <div key={`${article.link}-${index}`}>
+                                        <NewsCard article={article} groqApiKey={groqApiKey} />
+                                    </div>
+                                ))}
+                            </MasonryLayout>
+                        ) : (
+                            !isTopicsLoading && topics.length > 0 && (
+                                <p className="text-slate-500 font-medium text-sm">No recent news found for your topics.</p>
+                            )
+                        )}
                     </div>
                 </div>
             </main>

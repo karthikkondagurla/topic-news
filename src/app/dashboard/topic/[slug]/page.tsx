@@ -3,6 +3,7 @@ import NewsCard from "@/components/NewsCard";
 import { fetchRSS } from "@/utils/fetchRSS";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import MasonryLayout from "@/components/MasonryLayout";
 
 // Mock Data for "Key Players" until we build an AI entity extractor
 const MOCK_KEY_PLAYERS = [
@@ -14,6 +15,11 @@ const MOCK_KEY_PLAYERS = [
 ];
 
 export default async function TopicPage({ params }: { params: Promise<{ slug: string }> }) {
+    const breakpointColumnsObj = {
+        default: 2,
+        1024: 2,
+        768: 1
+    };
     // Decode the URL slug (e.g. "Semiconductor%20Lithography" -> "Semiconductor Lithography")
     const resolvedParams = await params;
     const topicName = decodeURIComponent(resolvedParams.slug);
@@ -132,49 +138,57 @@ export default async function TopicPage({ params }: { params: Promise<{ slug: st
                     </div>
 
                     {/* Trend Widget inside the feed stream */}
-                    <div className="columns-1 md:columns-2 lg:columns-2 gap-6 space-y-6">
-                        <article className="break-inside-avoid bg-white dark:bg-card-dark rounded-2xl shadow-subtle p-5 border border-slate-100 dark:border-slate-800">
-                            <div className="flex justify-between items-start mb-4">
-                                <div>
-                                    <span className="bg-tag-finance text-tag-finance-text text-[11px] font-mono font-bold uppercase tracking-wide px-2 py-1 rounded-md">Market Data</span>
-                                    <h2 className="text-lg font-bold text-slate-900 dark:text-white mt-3">Trend Index</h2>
-                                </div>
-                                <div className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded text-xs font-bold flex items-center">
-                                    <span className="material-symbols-outlined text-[14px] ml-1">arrow_upward</span>
-                                    4.2%
-                                </div>
-                            </div>
-
-                            {/* Abstract Chart Representation */}
-                            <div className="h-32 w-full flex items-end gap-1 px-2 mb-2">
-                                <div className="w-1/6 bg-slate-100 dark:bg-slate-800 h-[40%] rounded-t"></div>
-                                <div className="w-1/6 bg-slate-100 dark:bg-slate-800 h-[55%] rounded-t"></div>
-                                <div className="w-1/6 bg-slate-100 dark:bg-slate-800 h-[45%] rounded-t"></div>
-                                <div className="w-1/6 bg-slate-200 dark:bg-slate-700 h-[60%] rounded-t"></div>
-                                <div className="w-1/6 bg-primary/30 h-[75%] rounded-t"></div>
-                                <div className="w-1/6 bg-primary h-[90%] rounded-t relative group cursor-pointer">
-                                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                                        Peaking
+                    <MasonryLayout
+                        breakpointCols={breakpointColumnsObj}
+                        className="pigeon-masonry-grid"
+                        columnClassName="pigeon-masonry-grid_column"
+                    >
+                        <div className="mb-6">
+                            <article className="break-inside-avoid bg-white dark:bg-card-dark rounded-2xl shadow-subtle p-5 border border-slate-100 dark:border-slate-800 flex flex-col h-full">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div>
+                                        <span className="bg-tag-finance text-tag-finance-text text-[11px] font-mono font-bold uppercase tracking-wide px-2 py-1 rounded-md">Market Data</span>
+                                        <h2 className="text-lg font-bold text-slate-900 dark:text-white mt-3">Trend Index</h2>
+                                    </div>
+                                    <div className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded text-xs font-bold flex items-center">
+                                        <span className="material-symbols-outlined text-[14px] ml-1">arrow_upward</span>
+                                        4.2%
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="flex justify-between text-[10px] text-slate-400 font-mono uppercase">
-                                <span>Mon</span>
-                                <span>Tue</span>
-                                <span>Wed</span>
-                                <span>Thu</span>
-                                <span>Fri</span>
-                                <span>Sat</span>
-                            </div>
-                        </article>
+                                {/* Abstract Chart Representation */}
+                                <div className="h-32 w-full flex items-end gap-1 px-2 mb-2 mt-auto">
+                                    <div className="w-1/6 bg-slate-100 dark:bg-slate-800 h-[40%] rounded-t"></div>
+                                    <div className="w-1/6 bg-slate-100 dark:bg-slate-800 h-[55%] rounded-t"></div>
+                                    <div className="w-1/6 bg-slate-100 dark:bg-slate-800 h-[45%] rounded-t"></div>
+                                    <div className="w-1/6 bg-slate-200 dark:bg-slate-700 h-[60%] rounded-t"></div>
+                                    <div className="w-1/6 bg-primary/30 h-[75%] rounded-t"></div>
+                                    <div className="w-1/6 bg-primary h-[90%] rounded-t relative group cursor-pointer">
+                                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                            Peaking
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between text-[10px] text-slate-400 font-mono uppercase">
+                                    <span>Mon</span>
+                                    <span>Tue</span>
+                                    <span>Wed</span>
+                                    <span>Thu</span>
+                                    <span>Fri</span>
+                                    <span>Sat</span>
+                                </div>
+                            </article>
+                        </div>
 
                         {/* Article Feed */}
                         {articles.map((article, i) => (
-                            <NewsCard key={i} article={article} groqApiKey={apiKey} />
+                            <div key={i}>
+                                <NewsCard article={article} groqApiKey={apiKey} />
+                            </div>
                         ))}
 
-                    </div>
+                    </MasonryLayout>
                 </div>
             </div>
         </main>

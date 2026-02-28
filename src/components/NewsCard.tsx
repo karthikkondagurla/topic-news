@@ -65,37 +65,17 @@ export default function NewsCard({ article, groqApiKey }: NewsCardProps) {
         }
     };
 
-    const imgSrc = null;
-    const formattedDate = timeAgo;
     const aiSummary = summary.length > 0 ? { bullets: summary, sentiment: sentiment } : null;
     const isSummarizing = isLoadingAI;
 
     return (
-        <article className="break-inside-avoid bg-white/70 dark:bg-card-dark/70 backdrop-blur-xl rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group border border-white/60 dark:border-slate-700/50">
-            {imgSrc && (
-                <div className="relative h-48 w-full overflow-hidden">
-                    <img
-                        alt={article.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        src={imgSrc}
-                        onClick={() => openReader(article, groqApiKey)}
-                        style={{ cursor: "pointer" }}
-                    />
-                    <div className="absolute top-3 left-3">
-                        <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur text-slate-700 dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-sm">
-                            {article.topic || "News"}
-                        </span>
-                    </div>
+        <article className="break-inside-avoid bg-white/70 dark:bg-card-dark/70 backdrop-blur-xl rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group border border-white/60 dark:border-slate-700/50 flex flex-col h-full">
+            <div className="p-5 flex flex-col flex-1">
+                <div className="flex justify-between items-start mb-3">
+                    <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-200/50 dark:border-slate-700/50">
+                        {article.topic || "News"}
+                    </span>
                 </div>
-            )}
-            <div className="p-5">
-                {!imgSrc && (
-                    <div className="flex justify-between items-start mb-3">
-                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-slate-200/50 dark:border-slate-700/50">
-                            {article.topic || "News"}
-                        </span>
-                    </div>
-                )}
                 <h2
                     className="text-[17px] font-extrabold text-slate-900 dark:text-slate-100 leading-snug tracking-tight mb-2 group-hover:text-primary transition-colors cursor-pointer"
                     onClick={() => openReader(article, groqApiKey)}
@@ -108,11 +88,11 @@ export default function NewsCard({ article, groqApiKey }: NewsCardProps) {
                 <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium mb-4">
                     <span className="text-slate-800 dark:text-slate-300">{article.sourceName}</span>
                     <span>•</span>
-                    <span>{formattedDate}</span>
+                    <span>{timeAgo}</span>
                 </div>
 
                 {/* AI Processing Section */}
-                <div className="pt-4 border-t border-slate-100/50 dark:border-slate-800/50">
+                <div className="pt-4 border-t border-slate-100/50 dark:border-slate-800/50 mt-auto">
                     {!aiSummary && !aiError && !isSummarizing ? (
                         <div className="flex justify-end">
                             <button
