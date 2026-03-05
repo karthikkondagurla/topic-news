@@ -1,5 +1,3 @@
-import ogs from "open-graph-scraper";
-
 export interface Article {
     title: string;
     link: string;
@@ -9,40 +7,6 @@ export interface Article {
     topic: string;
     imageUrl?: string;
     description?: string;
-}
-
-const USER_AGENT =
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36";
-
-/**
- * Fetch OG image & description from a URL using open-graph-scraper.
- * Returns { imageUrl, description } or empty strings on failure.
- */
-async function fetchOGMetadata(
-    url: string
-): Promise<{ imageUrl: string; description: string }> {
-    try {
-        const data = await ogs({
-            url,
-            timeout: 8,
-            fetchOptions: {
-                headers: {
-                    "user-agent": USER_AGENT,
-                    "accept-language": "en-US,en;q=0.9",
-                },
-            },
-        });
-
-        if (!data.error && data.result) {
-            return {
-                imageUrl: data.result.ogImage?.[0]?.url ?? "",
-                description: data.result.ogDescription ?? "",
-            };
-        }
-    } catch {
-        // Silently fall back — some sites block scrapers
-    }
-    return { imageUrl: "", description: "" };
 }
 
 export async function fetchRSS(topics: string[]): Promise<Article[]> {
@@ -85,18 +49,13 @@ export async function fetchRSS(topics: string[]): Promise<Article[]> {
                     .replace(/<[^>]*>?/gm, "")
                     .substring(0, 150);
 
-                // Use OGS to fetch the real image & description from the publisher
-                const og = await fetchOGMetadata(articleLink);
-
                 return {
                     title,
                     link: articleLink,
                     pubDate: item.pubDate || new Date().toISOString(),
                     sourceName: source,
-                    contentSnippet: og.description || rssSnippet,
+                    contentSnippet: rssSnippet,
                     topic: rawTopic,
-                    imageUrl: og.imageUrl,
-                    description: og.description || rssSnippet,
                 };
             });
 

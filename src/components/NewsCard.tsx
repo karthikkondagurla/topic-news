@@ -72,22 +72,6 @@ export default function NewsCard({ article, groqApiKey }: NewsCardProps) {
 
     return (
         <article className="break-inside-avoid bg-white/70 dark:bg-card-dark/70 backdrop-blur-xl rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group border border-white/60 dark:border-slate-700/50 flex flex-col h-full">
-            {article.imageUrl && (
-                <div
-                    className="w-full h-48 bg-slate-100 dark:bg-slate-800 overflow-hidden relative cursor-pointer"
-                    onClick={() => openReader(article, groqApiKey)}
-                >
-                    <img
-                        src={article.imageUrl}
-                        alt={article.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        onError={(e) => {
-                            // Hide image space if it fails to load completely
-                            (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                    />
-                </div>
-            )}
 
             <div className="p-5 flex flex-col flex-1">
                 <div className="flex justify-between items-start mb-3">
@@ -102,7 +86,7 @@ export default function NewsCard({ article, groqApiKey }: NewsCardProps) {
                     {article.title}
                 </h2>
                 <p className="text-slate-500 dark:text-slate-400 text-[13px] leading-relaxed line-clamp-3 mb-4">
-                    {article.description || article.contentSnippet}
+                    {article.contentSnippet}
                 </p>
                 <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium mb-4">
                     <span className="text-slate-800 dark:text-slate-300">{article.sourceName}</span>
