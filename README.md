@@ -2,13 +2,15 @@
 
 **🟢 Live Deployment:** [pigeon-news.vercel.app](https://pigeon-news.vercel.app/)
 
-## 📸 product Screenshots
+## 📸 Product Screenshots
 
-![The Stream Dashboard](https://raw.githubusercontent.com/karthikkondagurla/topic-news/master/public/screenshots/dashboard.png)
-*The main Pigeon Stream, fetching news for saved topics via advanced RSS parsing & filtering.*
+<div align="center">
+  <img src="public/screenshots/dashboard.png" alt="The Stream Dashboard" width="800" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;" />
+  <p><em>The main Pigeon Stream, fetching news for saved topics via advanced RSS parsing & filtering.</em></p>
 
-![AI Summarization Reader Modal](https://raw.githubusercontent.com/karthikkondagurla/topic-news/master/public/screenshots/modal.png)
-*The Reader Modal leveraging the Groq API (Llama 3) to instantly read and summarize an article.*
+  <img src="public/screenshots/modal.png" alt="AI Summarization Reader Modal" width="600" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px;" />
+  <p><em>The Reader Modal leveraging the Groq API (Llama 3) to instantly read and summarize an article.</em></p>
+</div>
 
 Pigeon is a fast, intelligent, and highly automated news tracker designed to help you stay ahead in your industry. Built with rapid AI prototyping and agentic workflows, it curates, fetches, and interacts with real-time data seamlessly.
 
