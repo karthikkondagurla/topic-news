@@ -1,3 +1,5 @@
+import Parser from 'rss-parser';
+
 export interface Article {
     title: string;
     link: string;
@@ -9,6 +11,8 @@ export interface Article {
     description?: string;
 }
 
+const parser = new Parser();
+
 export async function fetchRSS(topics: string[]): Promise<Article[]> {
     const allArticles: Article[] = [];
 
@@ -16,24 +20,11 @@ export async function fetchRSS(topics: string[]): Promise<Article[]> {
         const encodedTopic = encodeURIComponent(rawTopic.trim());
         const googleRssUrl = `https://news.google.com/rss/search?q=${encodedTopic}&hl=en-US&gl=US&ceid=US:en`;
 
-        // Use rss2json to parse the Google News RSS feed (it returns proper links)
-        const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(googleRssUrl)}`;
-
         try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) {
-                console.error(`rss2json failed for topic "${rawTopic}"`);
-                continue;
-            }
+            const feed = await parser.parseURL(googleRssUrl);
 
-            const data = await response.json();
-            if (data.status !== "ok" || !data.items) {
-                console.error(`rss2json returned error for topic "${rawTopic}"`);
-                continue;
-            }
-
-            // Process articles concurrently — run OGS on every link in parallel
-            const articlesPromises = data.items.map(async (item: any) => {
+            // Process articles concurrently
+            const articlesPromises = (feed.items || []).map(async (item: any) => {
                 // Parse title & source from "Real Title - Source Name" format
                 let title = item.title || "Untitled Article";
                 let source = "Unknown Source";
@@ -45,7 +36,9 @@ export async function fetchRSS(topics: string[]): Promise<Article[]> {
                 }
 
                 const articleLink = item.link || "";
-                const rssSnippet = (item.description || item.content || "")
+
+                const description = item.contentSnippet || item.content || item.summary || "";
+                const rssSnippet = description
                     .replace(/<[^>]*>?/gm, "")
                     .substring(0, 150);
 
